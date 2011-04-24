@@ -70,8 +70,8 @@ _ezjail_cmd_create () {
 	"-b[jail start will be synchronous]" \
 	"-i[file-based jail]" \
 	"-s[size of the jail]:jailsize:" \
-	"::" \
-	"::"
+	":jail name:" \
+	":comma-separated IP addresses:"
 }
 
 _ezjail_cmd_delete () {
@@ -112,7 +112,8 @@ _ezjail_cmd_update () {
 	"-P[update only the ports tree]" \
 	"-b[perform a make buildworld]" \
 	"-i[perform only a make installworld]" \
-	"-u[use freebsd-update]"
+	"-u[use freebsd-update to update]" \
+	"-U[use freebsd-update to upgrade]"
 }
 
 _ezjail_cmd_start () {
