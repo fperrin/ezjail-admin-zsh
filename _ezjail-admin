@@ -37,7 +37,7 @@ _ezjail_cmd_archive () {
 	- archiveall \
 	    "-A[archive all jails]" \
 	- somejails \
-	    "*:jail:_ezjail_stopped_jails"
+	    "*:jail:_ezjail_mostly_stopped_jails"
 }
 
 _ezjail_cmd_config () {
@@ -55,7 +55,7 @@ _ezjail_cmd_console () {
     _arguments -s : \
 	"-e[execute command in jail]:execute:" \
 	"-f[start the jail if it isn't running]" \
-	"*:jailname:_ezjail_running_jails"	
+	"*:jailname:_ezjail_mostly_running_jails"	
 }
 
 _ezjail_cmd_create () {
@@ -78,7 +78,7 @@ _ezjail_cmd_delete () {
     _arguments -s : \
 	"-w[wipe the jail root]" \
 	"-f[proceed if the jail is running or mounted]" \
-	"*:jail:_ezjail_stopped_jails"
+	"*:jail:_ezjail_mostly_stopped_jails"
 }
 
 _ezjail_cmd_install () {
@@ -158,6 +158,20 @@ _ezjail_running_jails () {
 
 _ezjail_stopped_jails () {
     _values : `_ezjail_list_jails stopped`
+}
+
+# Some commands (console...) should be run with running jails,
+# unless -f is given, in which case we can operate on running jails
+_ezjail_mostly_running_jails () {
+    local wanted_jails=_ezjail_running_jails
+    [[ ${words[(i)-*f]} -le ${#words} ]] && wanted_jails=_ezjail_jails
+    $wanted_jails
+}
+
+_ezjail_mostly_stopped_jails () {
+    local wanted_jails=_ezjail_stopped_jails
+    [[ ${words[(i)-*f]} -le ${#words} ]] && wanted_jails=_ezjail_jails
+    $wanted_jails
 }
 
 _ezjail "$@"
