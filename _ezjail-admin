@@ -20,7 +20,7 @@ _ezjail () {
 	    "create[installs a new jail inside ezjail\'s scope]" \
 	    "cryptostart[start the encrypted jails]" \
 	    "delete[removes a jail from ezjail\'s config]" \
-	    "install[fetch and install things needed to setup an ezjail environment]" \
+	    "install[create the basejail from binary packages]" \
 	    "list[list all jails]" \
 	    "restart[restart a running jail]" \
 	    "restore[create new ezjails from archived versions]" \
@@ -82,7 +82,7 @@ _ezjail_cmd_cryptostart () {
 _ezjail_cmd_delete () {
     _arguments -s : \
 	"-w[wipe the jail root]" \
-	"-f[proceed if the jail is running or mounted]" \
+	"-f[proceed even if the jail is running]" \
 	"*:jail:_ezjail_mostly_stopped_jails"
 }
 
