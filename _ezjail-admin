@@ -18,14 +18,15 @@ _ezjail () {
 	    "config[manage specific jails]" \
 	    "console[attach your console to a running jail]" \
 	    "create[installs a new jail inside ezjail\'s scope]" \
+	    "cryptostart[start the encrypted jails]" \
 	    "delete[removes a jail from ezjail\'s config]" \
 	    "install[fetch and install things needed to setup an ezjail environment]" \
 	    "list[list all jails]" \
+	    "restart[restart a running jail]" \
 	    "restore[create new ezjails from archived versions]" \
-	    "update[create or update the basejail from source]" \
 	    "start[start a jail]" \
 	    "stop[stop a running jail]" \
-	    "restart[restart a running jail]"
+	    "update[create or update the basejail from source]"
     fi   
 }
 
@@ -74,6 +75,10 @@ _ezjail_cmd_create () {
 	":comma-separated IP addresses:"
 }
 
+_ezjail_cmd_cryptostart () {
+    _ezjail_running_jails
+}
+
 _ezjail_cmd_delete () {
     _arguments -s : \
 	"-w[wipe the jail root]" \
@@ -97,12 +102,24 @@ _ezjail_cmd_install () {
 
 _ezjail_cmd_list () {}
 
+_ezjail_cmd_restart () {
+    _ezjail_running_jails
+}
+
 _ezjail_cmd_restore () {
     _arguments -s : \
 	"-f[restore over an existing jail]" \
 	"-d[archive directory]:archivedir:_files -/" \
 	"*::_files" \
 	"*::_ezjail_jails"
+}
+
+_ezjail_cmd_start () {
+    _ezjail_stopped_jails
+}
+
+_ezjail_cmd_stop () {
+    _ezjail_running_jails
 }
 
 _ezjail_cmd_update () {
@@ -114,18 +131,6 @@ _ezjail_cmd_update () {
 	"-i[perform only a make installworld]" \
 	"-u[use freebsd-update to update]" \
 	"-U[use freebsd-update to upgrade]"
-}
-
-_ezjail_cmd_start () {
-    _ezjail_stopped_jails
-}
-
-_ezjail_cmd_stop () {
-    _ezjail_running_jails
-}
-
-_ezjail_cmd_restart () {
-    _ezjail_running_jails
 }
 
 _ezjail_flavours () {
