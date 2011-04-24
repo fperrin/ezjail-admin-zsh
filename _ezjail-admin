@@ -1,0 +1,132 @@
+#compdef ezjail-admin
+
+_ezjail () {
+    local cmd
+    if (( CURRENT > 2)); then
+	cmd=${words[2]}
+	# Set the context for the subcommand.
+	curcontext="${curcontext%:*:*}:ezjail-$cmd"
+	# Narrow the range of words we are looking at to exclude `p4'
+	(( CURRENT-- ))
+	shift words
+	# Run the completion for the subcommand
+	(( $+functions[_ezjail_cmd_$cmd] )) && _ezjail_cmd_$cmd
+
+    else
+	_values : \
+	    "archive[create a backup of one or several jails]" \
+	    "config[manage specific jails]" \
+	    "console[attach your console to a running jail]" \
+	    "create[installs a new jail inside ezjail\'s scope]" \
+	    "delete[removes a jail from ezjail\'s config]" \
+	    "install[fetch and install things needed to setup an ezjail environment]" \
+	    "list[list all jails]" \
+	    "restore[create new ezjails from archived versions]" \
+	    "update[create or update the basejail from source]" \
+	    "start[start a jail]" \
+	    "stop[stop a running jail]" \
+	    "restart[restart a running jail]"
+    fi   
+}
+
+_ezjail_cmd_archive () {
+    _arguments -s : \
+	"-d[destination directory]:destination dir:_files -/" \
+	"-a[archive name]:archive name:" \
+	"-f[archive the jail even if it is running]" \
+	- archiveall \
+	    "-A[archive all jails]" \
+	- somejails \
+	    "*:jail:_ezjail_jails"
+}
+
+_ezjail_cmd_config () {
+    _arguments -s : \
+	"-r[run the jail on host boot]:run:(run norun)" \
+	"-n[new jail name]:new name:" \
+	"-c[jail cpuset]:cpu list:" \
+	"-z[ZFS dataset to attach]:zfs dataset:" \
+	"-f[jail FIB number]:fib number:" \
+	"-i[operate on image]:imageaction:(attach detach fsck)" \
+	"*:jailname:_ezjail_jails"
+}
+
+_ezjail_cmd_console () {
+    _arguments -s : \
+	"-e[execute command in jail]:execute:" \
+	"-f[start the jail if it isn't running]" \
+	"*:jailname:_ezjail_jails"	
+}
+
+_ezjail_cmd_create () {
+    _arguments -s : \
+	"-f[flavour for the new jail]:flavour:_ezjail_flavours" \
+	"-x[jail exists, only update the config]" \
+	"-r[name of the root dir]:dir:" \
+	"-a[restore from archive]:archive:_files" \
+	"-A[restore config from archive]:configarchive:_files" \
+	"-c[image type]:imagetype:(bde eli zfs)" \
+	"-C[image parameters]:imageparams:" \
+	"-b[jail start will be synchronous]" \
+	"-i[file-based jail]" \
+	"-s[size of the jail]:jailsize:" \
+	"::" \
+	"::"
+}
+
+_ezjail_cmd_delete () {
+    _arguments -s : \
+	"-w[wipe the jail root]" \
+	"-f[proceed if the jail is running or mounted]" \
+	"*:jail:_ezjail_jails"
+}
+
+_ezjail_cmd_install () {
+    _arguments : \
+	- newjail \
+	    "-r[FreeBSD release]:release:(8.0-RELEASE 8-STABLE 9-STABLE)" \
+	    "-h[host for fetching packages]:remote host:" \
+	    "-m[include man pages]" \
+	    "-s[include the /usr/src tree]" \
+	    "-p[include the ports tree]" \
+	- pimpjail \
+	    "-M[install man pages over an existing basejail]" \
+	    "-S[install the /usr/src tree over an existing basejail]" \
+	    "-P[install the ports tree over an existing basejail]" \
+}
+
+_ezjail_cmd_list () {}
+
+_ezjail_cmd_restore () {
+    _arguments -s : \
+	"-f[restore over an existing jail]" \
+	"-d[archive directory]:archivedir:_files -/" \
+	"*::_files" \
+	"*::_ezjail_jails"
+}
+
+_ezjail_cmd_update () {
+    _arguments -s : \
+	"-p[also update the ports tree]" \
+	"-s[source tree]:source tree:_files -/" \
+	"-P[update only the ports tree]" \
+	"-b[perform a make buildworld]" \
+	"-i[perform only a make installworld]" \
+	"-u[use freebsd-update]"
+}
+
+_ezjail_jails () {
+    local etcjaildir="/usr/local/etc/ezjail/"
+    _files -W $etcjaildir
+}
+
+_ezjail_flavours () {
+    local flavourdir
+    local etcjailconf="/usr/local/etc/ezjail.conf"
+    flavourdir=$( ( . $etcjailconf ; ezjail_flavours_dir=${ezjail_flavours_dir:-${ezjail_jaildir}/flavours}; echo $ezjail_flavours_dir) )
+    _files -W $flavourdir
+}
+
+_ezjail "$@"
+
+# -*- mode: shell-script -*-
