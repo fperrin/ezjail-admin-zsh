@@ -1,5 +1,12 @@
 #compdef ezjail-admin
 
+# zsh completion for ezjail -- http://erdgeist.org/arts/software/ezjail/
+# This file is under the Beerware license, like ezjail itself
+
+# Heavily based on http://zsh.sf.net/Guide/zshguide06.html#l177
+
+# Frédéric Perrin, April 2011.
+
 _ezjail () {
     local cmd
     if (( CURRENT > 2)); then
