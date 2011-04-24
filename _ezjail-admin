@@ -83,7 +83,7 @@ _ezjail_cmd_create () {
 }
 
 _ezjail_cmd_cryptostart () {
-    _ezjail_running_jails
+    _ezjail_stopped_jails
 }
 
 _ezjail_cmd_delete () {
