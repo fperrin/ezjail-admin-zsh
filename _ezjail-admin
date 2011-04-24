@@ -37,7 +37,7 @@ _ezjail_cmd_archive () {
 	- archiveall \
 	    "-A[archive all jails]" \
 	- somejails \
-	    "*:jail:_ezjail_jails"
+	    "*:jail:_ezjail_stopped_jails"
 }
 
 _ezjail_cmd_config () {
@@ -55,7 +55,7 @@ _ezjail_cmd_console () {
     _arguments -s : \
 	"-e[execute command in jail]:execute:" \
 	"-f[start the jail if it isn't running]" \
-	"*:jailname:_ezjail_jails"	
+	"*:jailname:_ezjail_running_jails"	
 }
 
 _ezjail_cmd_create () {
@@ -78,7 +78,7 @@ _ezjail_cmd_delete () {
     _arguments -s : \
 	"-w[wipe the jail root]" \
 	"-f[proceed if the jail is running or mounted]" \
-	"*:jail:_ezjail_jails"
+	"*:jail:_ezjail_stopped_jails"
 }
 
 _ezjail_cmd_install () {
@@ -115,9 +115,16 @@ _ezjail_cmd_update () {
 	"-u[use freebsd-update]"
 }
 
-_ezjail_jails () {
-    local etcjaildir="/usr/local/etc/ezjail/"
-    _files -W $etcjaildir
+_ezjail_cmd_start () {
+    _ezjail_stopped_jails
+}
+
+_ezjail_cmd_stop () {
+    _ezjail_running_jails
+}
+
+_ezjail_cmd_restart () {
+    _ezjail_running_jails
 }
 
 _ezjail_flavours () {
@@ -125,6 +132,32 @@ _ezjail_flavours () {
     local etcjailconf="/usr/local/etc/ezjail.conf"
     flavourdir=$( ( . $etcjailconf ; ezjail_flavours_dir=${ezjail_flavours_dir:-${ezjail_jaildir}/flavours}; echo $ezjail_flavours_dir) )
     _files -W $flavourdir
+}
+
+_ezjail_list_jails () {
+    local jailcfgs="/usr/local/etc/ezjail"
+    local state=$1
+    local j
+    # Those names have already been passed through "tr -c '[alnum]' _" by ezjail
+    ( cd $jailcfgs && echo * | xargs rcorder ) | while read j; do
+	case $state in
+	running) [ -f /var/run/jail_${j}.id ] && echo $j ;;
+	stopped) [ -f /var/run/jail_${j}.id ] || echo $j ;;
+	*)       echo $j ;;
+	esac
+    done
+}
+
+_ezjail_jails () {
+    _values : `_ezjail_list_jails`
+}
+
+_ezjail_running_jails () {
+    _values : `_ezjail_list_jails running`
+}
+
+_ezjail_stopped_jails () {
+    _values : `_ezjail_list_jails stopped`
 }
 
 _ezjail "$@"
