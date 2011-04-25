@@ -154,8 +154,8 @@ _ezjail_list_jails () {
     # Those names have already been passed through "tr -c '[alnum]' _" by ezjail
     ( cd $jailcfgs && echo * | xargs rcorder ) | while read j; do
 	case $state in
-	running) [ -f /var/run/jail_${j}.id ] && echo $j ;;
-	stopped) [ -f /var/run/jail_${j}.id ] || echo $j ;;
+	running) [[ -f /var/run/jail_${j}.id ]] && echo $j ;;
+	stopped) [[ -f /var/run/jail_${j}.id ]] || echo $j ;;
 	*)       echo $j ;;
 	esac
     done
