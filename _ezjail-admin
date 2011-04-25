@@ -174,16 +174,16 @@ _ezjail_stopped_jails () {
 }
 
 # Some commands (console...) should be run with running jails,
-# unless -f is given, in which case we can operate on running jails
+# unless -f is given, in which case we can operate on all jails
 _ezjail_mostly_running_jails () {
     local wanted_jails=_ezjail_running_jails
-    [[ ${words[(i)-*f]} -le ${#words} ]] && wanted_jails=_ezjail_jails
+    (( ${words[(I)-*f]} )) && wanted_jails=_ezjail_jails
     $wanted_jails
 }
 
 _ezjail_mostly_stopped_jails () {
     local wanted_jails=_ezjail_stopped_jails
-    [[ ${words[(i)-*f]} -le ${#words} ]] && wanted_jails=_ezjail_jails
+    (( ${words[(I)-*f]} )) && wanted_jails=_ezjail_jails
     $wanted_jails
 }
 
