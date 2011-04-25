@@ -143,7 +143,7 @@ _ezjail_cmd_update () {
 _ezjail_flavours () {
     local flavourdir
     local etcjailconf="/usr/local/etc/ezjail.conf"
-    flavourdir=$( ( . $etcjailconf ; ezjail_flavours_dir=${ezjail_flavours_dir:-${ezjail_jaildir}/flavours}; echo $ezjail_flavours_dir) )
+    flavourdir=$( . $etcjailconf ; ezjail_flavours_dir=${ezjail_flavours_dir:-${ezjail_jaildir}/flavours}; echo $ezjail_flavours_dir )
     _files -W $flavourdir
 }
 
