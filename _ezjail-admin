@@ -154,23 +154,23 @@ _ezjail_list_jails () {
     # Those names have already been passed through "tr -c '[alnum]' _" by ezjail
     ( cd $jailcfgs && rcorder * ) | while read j; do
 	case $state in
-	running) [[ -f /var/run/jail_${j}.id ]] && echo $j ;;
-	stopped) [[ -f /var/run/jail_${j}.id ]] || echo $j ;;
-	*)       echo $j ;;
+	running) [[ -f /var/run/jail_${j}.id ]] && compadd $j ;;
+	stopped) [[ -f /var/run/jail_${j}.id ]] || compadd $j ;;
+	*)       compadd $j ;;
 	esac
     done
 }
 
 _ezjail_jails () {
-    _values : `_ezjail_list_jails`
+    _ezjail_list_jails all
 }
 
 _ezjail_running_jails () {
-    _values : `_ezjail_list_jails running`
+    _ezjail_list_jails running
 }
 
 _ezjail_stopped_jails () {
-    _values : `_ezjail_list_jails stopped`
+    _ezjail_list_jails stopped
 }
 
 # Some commands (console...) should be run with running jails,
