@@ -150,15 +150,17 @@ _ezjail_flavours () {
 _ezjail_list_jails () {
     local jailcfgs="/usr/local/etc/ezjail"
     local state=$1
+    local ret=1
     local j
     # Those names have already been passed through "tr -c '[alnum]' _" by ezjail
     for j in $( cd $jailcfgs && echo * ) ; do
 	case $state in
-	running) [[ -f /var/run/jail_${j}.id ]] && compadd $j ;;
-	stopped) [[ -f /var/run/jail_${j}.id ]] || compadd $j ;;
-	*)       compadd $j ;;
+	running) [[ -f /var/run/jail_${j}.id ]] && compadd $j && ret=0 ;;
+	stopped) [[ -f /var/run/jail_${j}.id ]] || compadd $j && ret=0 ;;
+	*)       compadd $j && ret=0 ;;
 	esac
     done
+    return $ret
 }
 
 _ezjail_jails () {
