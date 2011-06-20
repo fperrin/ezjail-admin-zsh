@@ -153,7 +153,7 @@ _ezjail_list_jails () {
     local ret=1
     local j
     # Those names have already been passed through "tr -c '[alnum]' _" by ezjail
-    for j in $( cd $jailcfgs && echo * ) ; do
+    for j in $jailcfgs/*(:t) ; do
 	case $state in
 	running) [[ -f /var/run/jail_${j}.id ]] && compadd $j && ret=0 ;;
 	stopped) [[ -f /var/run/jail_${j}.id ]] || compadd $j && ret=0 ;;
